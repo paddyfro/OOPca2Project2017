@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package programmingprojectca2;
+package CA2Project;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,7 +28,7 @@ public class LibraryApp
         this.itemList = new ArrayList<>();
     }
     
-    public LibraryApp(String name, ArrayList<Items> items, String address, int phoneNum)
+    public LibraryApp(String name, String address, int phoneNum)
     {
         this.name = name;
         this.address = address;
@@ -219,8 +219,10 @@ public class LibraryApp
     @Override
     public String toString()
     {
-        return "LibraryApp{" + "name=" + name + ", itemList=" + itemList + ", address=" + address + ", phoneNum=" + phoneNum + '}';
+        return getClass().getName() + "name=" + name + ", itemList=" + itemList + ", address=" + address + ", phoneNum=" + phoneNum + '}';
     }
+    
+    
     
     
     

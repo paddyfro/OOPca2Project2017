@@ -9,26 +9,27 @@ package CA2Project;
  *
  * @author patri
  */
-public class Film extends Item
+public class Film extends Items
 {
    private String director;
    private int rating;
    private int length;
    private String studio;
-   private String writer;
 
     public Film()
     {
     }
 
-    public Film(String director, int rating, int length, String studio, String writer)
+    public Film( String type, String title, String genre, String description, double price, int releaseYear, String director, int rating, int length, String studio)
     {
+        super(type,title, genre, description, price, releaseYear);
         this.director = director;
         this.rating = rating;
         this.length = length;
         this.studio = studio;
-        this.writer = writer;
     }
+
+   
 
     public String getDirector()
     {
@@ -70,20 +71,12 @@ public class Film extends Item
         this.studio = studio;
     }
 
-    public String getWriter()
-    {
-        return writer;
-    }
-
-    public void setWriter(String writer)
-    {
-        this.writer = writer;
-    }
+   
 
     @Override
     public String toString()
     {
-        return getClass().getName() +  " director=" + director + ", rating=" + rating + ", length=" + length + ", studio=" + studio + ", writer=" + writer + '}';
+        return getClass().getName() + super.toString() +  " director=" + director + ", rating=" + rating + ", length=" + length + ", studio=" + studio + '}';
     }
     
     

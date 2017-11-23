@@ -9,7 +9,7 @@ package CA2Project;
  *
  * @author patri
  */
-public class Book extends Item
+public class Book extends Items
 {
     private String isbn;
     private String author;
@@ -20,14 +20,16 @@ public class Book extends Item
     {
     }
 
-    public Book(String isbn, String author, int pageCount, double edition)
+    public Book(String type, String title, String genre, String description, double price, int releaseYear, String isbn, String author, int pageCount, double edition)
     {
+        super(type, title, genre, description, price, releaseYear);
         this.isbn = isbn;
         this.author = author;
         this.pageCount = pageCount;
         this.edition = edition;
     }
 
+   
     public String getIsbn()
     {
         return isbn;
@@ -71,8 +73,10 @@ public class Book extends Item
     @Override
     public String toString()
     {
-        return getClass().getName() + " isbn=" + isbn + ", author=" + author + ", pageCount=" + pageCount + ", edition=" + edition + '}';
+        return getClass().getName() + super.toString() + " isbn=" + isbn + ", author=" + author + ", pageCount=" + pageCount + ", edition=" + edition + '}';
     }
+    
+    
     
     
     
