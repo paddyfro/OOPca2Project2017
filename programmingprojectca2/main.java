@@ -22,7 +22,7 @@ public class main
 
     private final String[] mainMenuStringArray =
     {
-        "Display", "Admin", "Search", "Sort"
+        "Display", "Admin", "Search", "Sort", "Exit"
     };
 
     private final String[] DisplayMenuStringArray =
@@ -32,7 +32,7 @@ public class main
 
     private final String[] AdminMenuStringArray =
     {
-        "Add", "Remove", "Edit", "Go to Main Menu"
+        "Add", "Edit", "Remove", "Go to Main Menu"
     };
 
     private final String[] SearchMenuStringArray =
@@ -42,7 +42,12 @@ public class main
 
     private final String[] SortMenuStringArray =
     {
-        "Select Property", "Search By", "Go to Main Menu"
+        "Select Property", "Sort By", "Go to Main Menu"
+    };
+
+    private final String[] SelectItemTypeStringArray =
+    {
+        "Book", "Film"
     };
 
     public static void main(String[] args)
@@ -59,10 +64,10 @@ public class main
 
     private void initialiseStores()
     {
-        ArrayList<Items> list = new ArrayList<>();
+//        ArrayList<Items> list = new ArrayList<>();
         this.library = new LibraryApp("DKIT", "Dundalk", 0412563124);
-        readDataIn(library);
-        
+        readDataIn();
+
     }
 
     private void showMainMenu()
@@ -76,15 +81,19 @@ public class main
             {
                 case 1:
                     // call loadData() method
+                    //cormac
                     showDisplayMenu("Display Menu", DisplayMenuStringArray);
                     break;
                 case 2:
+                    //patrick
                     showAdminMenu("Admin Menu", AdminMenuStringArray);
                     break;
                 case 3:
+                    //cormac
                     showSearchMenu("Search Menu", SearchMenuStringArray);
                     break;
                 case 4:
+                    //patrick
                     showSorthMenu("Sort Menu", SortMenuStringArray);
 
                 default:
@@ -103,18 +112,22 @@ public class main
             System.out.println("\n\n***************** " + menuHeader + " *****************");
             choice = showMenuGetChoice(displayMenuStringArray);
             //we need to look at the taskMenuStringArray to see what these values are
+            //"Display All", "Display Books", "Display Films", "Display Library Info", "Go to Main Menu"
             if (choice == 1)
             {
                 printAllItems();
             } else if (choice == 2)
             {
-
+                //"Display Books"
+//                displayBooksArray(this.library.getItems());
+                filterForBooks(this.library.getItems());
             } else if (choice == 3)
             {
-
+                //"Display Films",
+                filterForFilms(this.library.getItems());
             } else if (choice == 4)
             {
-
+                //"Display Library Info"
             }
         } while (choice != displayMenuStringArray.length);
     }
@@ -122,25 +135,28 @@ public class main
     private void showAdminMenu(String menuHeader, String[] adminMenuStringArray)
     {
         int choice;
+        OUTER:
         do
         {
             System.out.println("\n\n***************** " + menuHeader + " *****************");
             choice = showMenuGetChoice(adminMenuStringArray);
             //we need to look at the taskMenuStringArray to see what these values are
-            if (choice == 1)
+            switch (choice)
             {
-                addItems();
-            } else if (choice == 2)
-            {
-                editPerson();
-            } else if (choice == 3)
-            {
-                deleteItems();
-            } else if (choice == 4)
-            {
-                printAllItems();
+                case 1:
+                    addItems();
+                    break;
+                case 2:
+                    editItem();
+                    break;
+                case 3:
+                    deleteItems();
+                    break;
+
+                default:
+                    break;
             }
-        } while (choice != adminMenuStringArray.length); //user enters choice in range 1 - 5 i.e. not zero based	
+        } while (choice != adminMenuStringArray.length);
     }
 
     private void showSearchMenu(String menuHeader, String[] searchMenuStringArray)
@@ -151,14 +167,13 @@ public class main
             System.out.println("\n\n***************** " + menuHeader + " *****************");
             choice = showMenuGetChoice(searchMenuStringArray);
             //we need to look at the taskMenuStringArray to see what these values are
+            //"Select Property", "Search By", "Go to Main Menu"
             if (choice == 1)
             {
-
+//Select Property",
             } else if (choice == 2)
             {
-
-            } else if (choice == 3)
-            {
+//Search By",
             }
         } while (choice != searchMenuStringArray.length); //user enters choice in range 1 - 5 i.e. not zero based	
     }
@@ -171,12 +186,13 @@ public class main
             System.out.println("\n\n***************** " + menuHeader + " *****************");
             choice = showMenuGetChoice(sortMenuStringArray);
             //we need to look at the taskMenuStringArray to see what these values are
+            //"Select Property", "sort By", "Go to Main Menu
             if (choice == 1)
             {
-
+//"Select Property",
             } else if (choice == 2)
             {
-
+//sort by
             }
         } while (choice != sortMenuStringArray.length); //user enters choice in range 1 - 5 i.e. not zero based	
     }
@@ -202,16 +218,43 @@ public class main
         boolean bAdded;         // Added flag (type boolean)
         do
         {
-            System.out.println("Please enter Person Details");
-            String type = ScannerUtility.getString("Enter type('book' or 'film')");
+            int choice;
+            System.out.println("Please enter new Item Details");
+            do
+            {
+                choice = showMenuGetChoice(SelectItemTypeStringArray);
+            } while (choice < 1 || choice > 2);
+            if (choice == 1)
+            {
+                System.out.println("\nEnter Book Details Below:\n-----------------------------\n");
+            } else
+            {
+                System.out.println("\nEnter Film Details Below\n-----------------------------\n");
+            }
+
             String title = ScannerUtility.getString("Enter Title: ");
             String genre = ScannerUtility.getString("Enter Genre: ");
             String description = ScannerUtility.getString("Enter description: ");
             double price = ScannerUtility.getDouble("Enter Price: ");
             int releaseYear = ScannerUtility.getInt("Enter Release Year: ");
 
-            bAdded = this.library.add(new Items(type, title, genre, description, price, releaseYear));
+            if (choice == 1)
+            {
+                String isbn = ScannerUtility.getString("enter ISBN: ");
+                String author = ScannerUtility.getString("Enter Author: ");
+                int pageCount = ScannerUtility.getInt("Enter page count: ");
+                double edition = ScannerUtility.getDouble("Enter edition: ");
+                bAdded = this.library.add(new Book("Book", title, genre, description, price, releaseYear, isbn, author, pageCount, edition));
+            } else
+            {
+                String director = ScannerUtility.getString("enter Director: ");
+                int rating = ScannerUtility.getInt("Enter age rating: ");
+                int length = ScannerUtility.getInt("Enter length in minutes: ");
+                String studio = ScannerUtility.getString("enter studio: ");
+                bAdded = this.library.add(new Film("Film", title, genre, description, price, releaseYear, director, rating, length, studio));
+            }
 
+//            bAdded = this.library.add(new Items("book", title, genre, description, price, releaseYear));
             if (bAdded)
             {
                 System.out.println("Add completed...");
@@ -223,40 +266,100 @@ public class main
         } while (!bAdded);
     }
 
-    private void editPerson()
+    private void editItem()
     {
         System.out.println();
-        this.library.print();
+        printAllItems();
         int choice = ScannerUtility.getInt("Enter index of items to edit:", 0, this.library.size() - 1);
-
-        Items i = this.library.searchByIndex(choice);
+        
+        System.out.println("\nItem Details :");
+        System.out.println(this.library.getItems().get(choice));
 
         String newTitle = ScannerUtility.getString("Enter new title (or leave blank to skip): ");
         String newGenre = ScannerUtility.getString("Enter new genre (or leave blank to skip): ");
         String newDesc = ScannerUtility.getString("Enter new description (or leave blank to skip): ");
-        double newPrice = ScannerUtility.getDouble("Enter new price (or leave blank to skip): ");
-        int newReleaseYear = ScannerUtility.getInt("Enter New Release Year (or leave blank to skip): ");
+        double newPrice = ScannerUtility.getDouble("Enter new price (or '0' to skip): ");
+        int newReleaseYear = ScannerUtility.getInt("Enter New Release Year (or '0' to skip): ");
 
-        //if blank is entered that means user is skipping which means we use existing name/email/tel
-        newTitle = (newTitle.length() == 0) ? i.getTitle() : newTitle;
-        newGenre = (newGenre.length() == 0) ? i.getGenre() : newGenre;
-        newDesc = (newDesc.length() == 0) ? i.getDescription() : newDesc;
-        newPrice = (newPrice == 0) ? i.getPrice() : newPrice;
-        newReleaseYear = (newReleaseYear == 0) ? i.getReleaseYear() : newReleaseYear;
+        if (this.library.getItems().get(choice) instanceof Book)
+        {
+//            System.out.println(" its a boook!!!");
 
-        i.setTitle(newTitle);
-        i.setGenre(newGenre);
-        i.setDescription(newDesc);
-        i.setPrice(newPrice);
-        i.setReleaseYear(newReleaseYear);
+            Book editBook = new Book((Book) this.library.getItems().get(choice));
+            String newIsbn = ScannerUtility.getString("Enter new ISBN (or leave blank to skip): ");
+            String newAuthor = ScannerUtility.getString("Enter new author (or leave blank to skip): ");
+            int newPageCount = ScannerUtility.getInt("Enter new page count (or '0' to skip): ");
+            double newEdition = ScannerUtility.getDouble("Enter new edition (or '0' to skip): ");
 
+            //if blank is entered that means user is skipping which means we use existing name/email/tel
+            newTitle = (newTitle.length() == 0) ? editBook.getTitle() : newTitle;
+            newGenre = (newGenre.length() == 0) ? editBook.getGenre() : newGenre;
+            newDesc = (newDesc.length() == 0) ? editBook.getDescription() : newDesc;
+            newPrice = (newPrice == 0) ? editBook.getPrice() : newPrice;
+            newReleaseYear = (newReleaseYear == 0) ? editBook.getReleaseYear() : newReleaseYear;
+            newIsbn = (newIsbn.length() == 0) ? editBook.getIsbn() : newIsbn;
+            newAuthor = (newAuthor.length() == 0) ? editBook.getAuthor() : newAuthor;
+            newPageCount = (newPageCount == 0) ? editBook.getPageCount() : newPageCount;
+            newEdition = (newEdition == 0) ? editBook.getEdition() : newEdition;
+
+            editBook.setTitle(newTitle);
+            editBook.setGenre(newGenre);
+            editBook.setDescription(newDesc);
+            editBook.setPrice(newPrice);
+            editBook.setReleaseYear(newReleaseYear);
+            editBook.setIsbn(newIsbn);
+            editBook.setAuthor(newAuthor);
+            editBook.setPageCount(newPageCount);
+            editBook.setEdition(newEdition);
+
+//            System.out.println("original book: " + this.library.getItems().get(choice));
+//            System.out.println(" edit book: " + editBook);
+            //update arraylist
+            this.library.updateList(editBook, choice);
+
+        } else if (this.library.getItems().get(choice) instanceof Film)
+        {
+//            System.out.println("its a film!!!");
+            Film editFilm = new Film((Film) this.library.getItems().get(choice));
+            String newDirector = ScannerUtility.getString("Enter new director (or leave blank to skip): ");
+            int newRating = ScannerUtility.getInt("Enter new age rating (or '0' to skip): ");
+            int newLength = ScannerUtility.getInt("Enter new length (in minutes) (or '0' to skip): ");
+            String newStudio = ScannerUtility.getString("Enter new studio (or leave blank to skip): ");
+
+            //if blank is entered that means user is skipping which means we use existing name/email/tel
+            newTitle = (newTitle.length() == 0) ? editFilm.getTitle() : newTitle;
+            newGenre = (newGenre.length() == 0) ? editFilm.getGenre() : newGenre;
+            newDesc = (newDesc.length() == 0) ? editFilm.getDescription() : newDesc;
+            newPrice = (newPrice == 0) ? editFilm.getPrice() : newPrice;
+            newReleaseYear = (newReleaseYear == 0) ? editFilm.getReleaseYear() : newReleaseYear;
+            newDirector = (newDirector.length() == 0) ? editFilm.getDirector() : newDirector;
+            newRating = (newRating == 0) ? editFilm.getLength() : newRating;
+            newLength = (newLength == 0) ? editFilm.getLength() : newLength;
+            newStudio = (newStudio.length() == 0) ? editFilm.getStudio() : newStudio;
+
+            editFilm.setTitle(newTitle);
+            editFilm.setGenre(newGenre);
+            editFilm.setDescription(newDesc);
+            editFilm.setPrice(newPrice);
+            editFilm.setReleaseYear(newReleaseYear);
+            editFilm.setDirector(newDirector);
+            editFilm.setRating(newRating);
+            editFilm.setLength(newLength);
+            editFilm.setStudio(newStudio);
+
+            this.library.updateList(editFilm, choice);
+        } else
+        {
+            System.out.println(" sorry there was an error");
+        }
         System.out.println("Edit completed...");
     }
 
     private void deleteItems()
     {
         System.out.println();
-        this.library.print();
+//        this.library.print();
+        printAllItems();
         int index = ScannerUtility.getInt("Enter index of person to delete(-1 to skip):", -1, this.library.size() - 1);
 
         if (index != -1)
@@ -275,12 +378,22 @@ public class main
 
     private void printAllItems()
     {
+        System.out.println("Printing all the items");
         System.out.println();
-        this.library.print();
+//        this.library.print();
+        int index = 0;
+        for (Items i : this.library.getItems())
+        {
+            System.out.print("index: [" + index + "]");
+            index++;
+
+            System.out.println(" " + i + "\n");
+        }
     }
 
-    public void readDataIn(LibraryApp library)
+    public void readDataIn()
     {
+
         try (BufferedReader br = new BufferedReader(new FileReader("library.csv")))
         {
 
@@ -307,7 +420,7 @@ public class main
                     Integer pageCount = Integer.parseInt(stringTokenizer.nextElement().toString());
                     Double edidtion = Double.parseDouble(stringTokenizer.nextElement().toString());
                     //adds book item to library arraylist
-                    library.add(new Book(type, title, genere, description, price, releaseYear, isbn, author, pageCount, edidtion));
+                    this.library.add(new Book(type, title, genere, description, price, releaseYear, isbn, author, pageCount, edidtion));
 
                 } else
                 {
@@ -317,7 +430,7 @@ public class main
                     Integer length = Integer.parseInt(stringTokenizer.nextElement().toString());
                     String studio = stringTokenizer.nextElement().toString();
                     //adds film item to library arrayList
-                    library.add(new Film(type, title, genere, description, price, releaseYear, director, rating, length, studio));
+                    this.library.add(new Film(type, title, genere, description, price, releaseYear, director, rating, length, studio));
 
                 }
                 //type check book or film here
@@ -328,7 +441,6 @@ public class main
 //                Integer age = Integer.parseInt(stringTokenizer.nextElement().toString());
 
 //                Double mark = Double.parseDouble(stringTokenizer.nextElement().toString());
-
 //                students.add(new Student(name,age,mark));
                 //if(item.instanceof book)
                 //write out("book",id, etc);
@@ -345,63 +457,88 @@ public class main
             e.printStackTrace();
         }
     }
-    
+
     //display all elements of an array of type book
-    public static void displayBooks(ArrayList<Book> list)
-    {
-        for (Book books : list)
-        {
-            System.out.println(books);
-        }
-    }
+//    public static void displayBooksArray(ArrayList<Items> list)
+//    {
+////        System.out.println("displayBookArray");
+//        ArrayList<Book> book = filterForBooks(list);
+//        for (Book books : book)
+//        {
+//            System.out.println(books);
+//        }
+//    }
     //display all elements fo an array of type film
-    public static void displayFilms(ArrayList<Film> list)
+    public static void displayFilmsArray(ArrayList<Film> list)
     {
-        for(Film films : list)
+        for (Film films : list)
         {
             System.out.println(films);
         }
     }
+
     /**
-     * takes in an arraylist of type item and returns an arraylist of all the book type in it
+     * takes in an arraylist of type item and returns an arraylist of all the
+     * book type in it
+     *
      * @param list
-     * @return 
+     * @return
      */
-    public static ArrayList<Book> filterForBooks(ArrayList<Items> list)
+//    public static ArrayList<Book> filterForBooks(ArrayList<Items> list)
+//    {
+//        System.out.println("filter for books");
+//        ArrayList<Book> books = new ArrayList<>();
+//        System.out.println("crate array");
+//        for (Items item : list)
+//        {
+////            System.out.println(item);
+////            System.out.println("type: " + item.getType());
+//            //code to check for type pf books
+//            if (item.getType().toLowerCase().equals("book"))
+//            {
+//                System.out.println(item);
+////                Book newBook = (Book) item;
+////                books.add(newBook);
+//            }
+//        }
+//        return books;
+//    }
+    public static void filterForBooks(ArrayList<Items> list)
     {
-        ArrayList<Book> books = new ArrayList<>();
+        System.out.println("filter for books");
+
         for (Items item : list)
         {
-            //code to check for type pf books
-            if(item.getType().toLowerCase().equals("book"))
+            if (item instanceof Book)
             {
-                Book newBook = (Book) item;
-                books.add(newBook);
+                System.out.println(item);
             }
+
+//            if (item.getType().toLowerCase().equals("book"))
+//            {
+//                System.out.println(item);
+//
+//            }
         }
-        return books;
     }
+
     /**
-     * takes in an array list of type item and returns a array list with all the film type objects in it
+     * takes in an array list of type item and returns a array list with all the
+     * film type objects in it
+     *
      * @param list
-     * @return 
+     * @return
      */
-    public static ArrayList<Film> filterForFilms(ArrayList<Items> list)
+    public static void filterForFilms(ArrayList<Items> list)
     {
-        ArrayList<Film> films = new ArrayList<>();
-        for(Items item : list)
+        for (Items item : list)
         {
             //check if type of ite matches "film"
-            if(item.getType().toLowerCase().equals("film"))
+            if (item instanceof Film)
             {
-//                System.out.println("item type: " + item.getType());
-//                System.out.println("item name: " + item.getTitle());
-                //if it does convert it to a film object so it can be added to new film arraylist
-                Film newFilm = (Film) item;
-                films.add(newFilm);
+                System.out.println(item);
             }
         }
-        return films;
     }
 
 }

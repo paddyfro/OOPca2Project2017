@@ -28,6 +28,16 @@ public class Film extends Items
         this.length = length;
         this.studio = studio;
     }
+    
+        // Copy Constructor - used to clone an object
+    public Film(Film original)
+    {
+        super(original);
+        this.director = original.director;  // ok, as Strings are immutable
+        this.rating = original.rating;
+        this.length = original.length;
+        this.studio = original.studio;
+    }
 
    
 

@@ -25,7 +25,7 @@ public class MainTest
         list.add(new Film("film", "Dog Soldiers", "horror", "werewolves", 19.99, 1998, "neil bloomkamp", 18, 123, "universal"));
         list.add(new Film("film","Dog Soldiers", "horror", "werewolves", 19.99, 1998, "neil bloomkamp", 18, 123, "universal"));
         list.add(new Film("film","The mummy", "comedy", "mumy", 19.99, 1998, "neil bloomkamp", 15, 90, "universal"));
-        list.add(new Film("film","Evil dead", "slapstick", "zombies", 19.99, 1998, "neil bloomkamp", 21, 150, "universal"));
+        list.add(new Film("Film","Evil dead", "slapstick", "zombies", 19.99, 1998, "neil bloomkamp", 21, 150, "universal"));
         list.add(new Book("book","everyone poops", "comedy", "a rip roaring tale", 23.56, 1986, "123456sd5", "mr poopington", 356, 2.5));
         list.add(new Book("book","no one poops", "comedy", "a rip roaring tale", 23.56, 1986, "123456sd5", "Brandon Sanderson", 456, 2.5));
         list.add(new Book("book","only some poops", "comedy", "a rip roaring tale", 23.56, 1986, "123456sd5", "Stephen King", 26, 2.5));

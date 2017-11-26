@@ -11,6 +11,7 @@ package CA2Project;
  */
 public class Book extends Items
 {
+
     private String isbn;
     private String author;
     private int pageCount;
@@ -29,7 +30,16 @@ public class Book extends Items
         this.edition = edition;
     }
 
-   
+    // Copy Constructor - used to clone an object
+    public Book(Book original)
+    {
+        super(original);
+        this.isbn = original.isbn;  // ok, as Strings are immutable
+        this.author = original.author;
+        this.pageCount = original.pageCount;
+        this.edition = original.edition;
+    }
+
     public String getIsbn()
     {
         return isbn;
@@ -75,11 +85,5 @@ public class Book extends Items
     {
         return getClass().getName() + super.toString() + " isbn=" + isbn + ", author=" + author + ", pageCount=" + pageCount + ", edition=" + edition + '}';
     }
-    
-    
-    
-    
-    
-    
-    
+
 }

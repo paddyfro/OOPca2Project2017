@@ -15,6 +15,7 @@ import java.util.List;
  */
 public class LibraryApp
 {
+
     private String name;
     private ArrayList<Items> itemList;
     private String address;
@@ -25,15 +26,15 @@ public class LibraryApp
         this.name = "";
         this.address = "";
         this.phoneNum = 0;
-        this.itemList = new ArrayList<>();
+        this.itemList = new ArrayList<Items>();
     }
-    
+
     public LibraryApp(String name, String address, int phoneNum)
     {
         this.name = name;
         this.address = address;
         this.phoneNum = phoneNum;
-        this.itemList = new ArrayList<>();
+        this.itemList = new ArrayList<Items>();
     }
 
     public String getName()
@@ -75,7 +76,7 @@ public class LibraryApp
     {
         this.phoneNum = phoneNum;
     }
-    
+
     /**
      *
      * @param i
@@ -83,30 +84,43 @@ public class LibraryApp
      */
     public boolean add(Items i)
     {
-        if (i == null) {
+        if (i == null)
+        {
             return false;
         }
-        
-        if (!this.itemList.contains(i)) {
-            this.itemList.add(new Items(i));
+
+        if (!this.itemList.contains(i))
+        {
+
+            if (i instanceof Film)
+            {
+                this.itemList.add(new Film((Film) i));
+            }
+            if (i instanceof Book)
+            {
+                this.itemList.add(new Book((Book) i));
+            }
+//            this.itemList.add(new Items(i));
             return true;
         }
         return false;
     }
-    
+
     /**
      *
      * @return
      */
     public int size()
     {
-        if (this.itemList != null) {
+        if (this.itemList != null)
+        {
             return this.itemList.size();
-        } else {
+        } else
+        {
             return 0;
         }
     }
-    
+
     /**
      *
      * @param index
@@ -114,17 +128,21 @@ public class LibraryApp
      */
     public Items searchByIndex(int index)
     {
-        if (this.itemList.isEmpty()) {
+        if (this.itemList.isEmpty())
+        {
             return null;
         }
 
-        if ((index >= 0) && (index < this.itemList.size())) {
+        if ((index >= 0) && (index < this.itemList.size()))
+        {
+
             return new Items(this.itemList.get(index));
-        } else {                                     
+        } else
+        {
             return null;
         }
     }
-    
+
     /**
      *
      * @param name
@@ -132,21 +150,26 @@ public class LibraryApp
      */
     public Items searchByName(String name)
     {
-        if (this.itemList.isEmpty()) {
+        if (this.itemList.isEmpty())
+        {
             return null;
         }
 
-        if ((name == null) || (name.length() == 0)) {
+        if ((name == null) || (name.length() == 0))
+        {
             return null;
         }
 
-        for( Items i : itemList ) {
-            if( this.name.equalsIgnoreCase(name) )
-                return new Items( i );
+        for (Items i : itemList)
+        {
+            if (this.name.equalsIgnoreCase(name))
+            {
+                return new Items(i);
+            }
         }
         return null;
     }
-    
+
     /**
      *
      * @param name
@@ -156,14 +179,15 @@ public class LibraryApp
     {
         Items i = searchByName(name);
 
-        if (i != null) {
+        if (i != null)
+        {
             this.itemList.remove(i);
             return true;
         }
 
         return false;
     }
-    
+
     /**
      *
      * @param index
@@ -171,42 +195,45 @@ public class LibraryApp
      */
     public boolean removeByIndex(int index)
     {
-        if (this.itemList.isEmpty()) {
+        if (this.itemList.isEmpty())
+        {
             return false;
         }
 
-        if (index >= 0 && index < this.itemList.size()) {
+        if (index >= 0 && index < this.itemList.size())
+        {
             this.itemList.remove(index);
             return true;
-        } else {
+        } else
+        {
             return false;
         }
     }
-    
+
     /**
      *
      */
     public void clear()
     {
-        if (this.itemList != null) {
+        if (this.itemList != null)
+        {
             this.itemList.clear();
         }
     }
-    
+
     /**
      *
      */
-    public void print()
-    {
-        int index = 0;
-        for (Items i : this.itemList) {
-            System.out.println("[" + index + "]");
-            index++;
-
-            System.out.println(i+"\n");
-        }
-    }
-    
+//    public void print()
+//    {
+//        int index = 0;
+//        for (Items i : this.itemList) {
+//            System.out.println("[" + index + "]");
+//            index++;
+//
+//            System.out.println(i+"\n");
+//        }
+//    }
     /**
      *
      * @return
@@ -221,42 +248,22 @@ public class LibraryApp
     {
         return getClass().getName() + "name=" + name + ", itemList=" + itemList + ", address=" + address + ", phoneNum=" + phoneNum + '}';
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    public void updateList(Book book, int index)
+    {
+        //use index to set item in index loc
+        Book newBook = new Book(book);
+        itemList.remove(index);
+        itemList.add(index, newBook);
+        System.out.println("Book details have been updated!");
+    }
 
-    
-    
-    
-    
-    
+    public void updateList(Film film, int index)
+    {
+        Film newFilm = new Film(film);
+        itemList.remove(index);
+        itemList.add(index, film);
+        System.out.println("Film details have been updated!");
+    }
+
 }
