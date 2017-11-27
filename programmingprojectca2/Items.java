@@ -32,7 +32,7 @@ public class Items
         this.description = "";
         this.price = 0.0;
         this.releaseYear = 0;
-        
+        idCount++;
     }
     
     public Items(String type, String title, String genre, String description, double price, int releaseYear)

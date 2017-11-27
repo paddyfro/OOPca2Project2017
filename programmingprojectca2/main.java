@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.StringTokenizer;
 
 /**
@@ -42,7 +43,22 @@ public class main
 
     private final String[] SortMenuStringArray =
     {
-        "Select Property", "Sort By", "Go to Main Menu"
+        "Sort All", "Sort Books", "Sort Films", "Go to Main Menu"
+    };
+
+    private final String[] SortMenuStringArrayAll =
+    {
+        "Sort by Title", "Sort by Price", "Go to Main Menu"
+    };
+
+    private final String[] SortMenuStringArrayBooks =
+    {
+        "Sort by Author", "Sort by Page count", "Sort by title", "sort by price", "Go to Main Menu"
+    };
+
+    private final String[] SortMenuStringArrayFilms =
+    {
+        "Sort by Rating", "Sort by film length", "Sort by title", "sort by price", "Go to Main Menu"
     };
 
     private final String[] SelectItemTypeStringArray =
@@ -94,7 +110,7 @@ public class main
                     break;
                 case 4:
                     //patrick
-                    showSorthMenu("Sort Menu", SortMenuStringArray);
+                    showSortMenu("Sort Menu", SortMenuStringArray);
 
                 default:
                     break;
@@ -178,7 +194,7 @@ public class main
         } while (choice != searchMenuStringArray.length); //user enters choice in range 1 - 5 i.e. not zero based	
     }
 
-    private void showSorthMenu(String menuHeader, String[] sortMenuStringArray)
+    private void showSortMenu(String menuHeader, String[] sortMenuStringArray)
     {
         int choice;
         do
@@ -186,13 +202,63 @@ public class main
             System.out.println("\n\n***************** " + menuHeader + " *****************");
             choice = showMenuGetChoice(sortMenuStringArray);
             //we need to look at the taskMenuStringArray to see what these values are
-            //"Select Property", "sort By", "Go to Main Menu
+            //"Sort All", "Sort Books", "Sort Films", "Go to Main Menu"
             if (choice == 1)
             {
-//"Select Property",
+                showSortAllMenu("Sort All Menu", SortMenuStringArrayAll);
             } else if (choice == 2)
             {
-//sort by
+                showSortBookMenu("Sort Books Menu", SortMenuStringArrayBooks);//sort by
+            } else if (choice == 3)
+            {
+                showSortFilmMenu("Sort Films Menu", SortMenuStringArrayFilms);
+            }
+        } while (choice != sortMenuStringArray.length); //user enters choice in range 1 - 5 i.e. not zero based	
+    }
+
+    private void showSortAllMenu(String menuHeader, String[] sortMenuStringArray)
+    {
+        int choice;
+        do
+        {
+            System.out.println("\n\n***************** " + menuHeader + " *****************");
+            choice = showMenuGetChoice(sortMenuStringArray);
+            if (choice == 1)
+            {
+                sortItemsAll(1);
+            } else if (choice == 2)
+            {
+                sortItemsAll(2);
+            }
+        } while (choice != sortMenuStringArray.length); //user enters choice in range 1 - 5 i.e. not zero based	
+    }
+
+    private void showSortBookMenu(String menuHeader, String[] sortMenuStringArray)
+    {
+        int choice;
+        do
+        {
+            System.out.println("\n\n***************** " + menuHeader + " *****************");
+            choice = showMenuGetChoice(sortMenuStringArray);
+            if (choice >= 1 || choice <= sortMenuStringArray.length)
+            {
+//                System.out.println("sorting by author");
+                sortItemsBooks(choice);
+            }
+        } while (choice != sortMenuStringArray.length); //user enters choice in range 1 - 5 i.e. not zero based	
+    }
+
+    private void showSortFilmMenu(String menuHeader, String[] sortMenuStringArray)
+    {
+        int choice;
+        do
+        {
+            System.out.println("\n\n***************** " + menuHeader + " *****************");
+            choice = showMenuGetChoice(sortMenuStringArray);
+            if (choice >= 1 || choice <= sortMenuStringArray.length)
+            {
+//                System.out.println(" sort by rating");
+                sortItemsFilms(choice);
             }
         } while (choice != sortMenuStringArray.length); //user enters choice in range 1 - 5 i.e. not zero based	
     }
@@ -271,7 +337,7 @@ public class main
         System.out.println();
         printAllItems();
         int choice = ScannerUtility.getInt("Enter index of items to edit:", 0, this.library.size() - 1);
-        
+
         System.out.println("\nItem Details :");
         System.out.println(this.library.getItems().get(choice));
 
@@ -433,24 +499,6 @@ public class main
                     this.library.add(new Film(type, title, genere, description, price, releaseYear, director, rating, length, studio));
 
                 }
-                //type check book or film here
-                //then goes on t take in relevant data
-//                String name = stringTokenizer.nextElement().toString();
-                //or can use stringTokenizer.nextToken - this returns a string 
-                //nextElement returns an object
-//                Integer age = Integer.parseInt(stringTokenizer.nextElement().toString());
-
-//                Double mark = Double.parseDouble(stringTokenizer.nextElement().toString());
-//                students.add(new Student(name,age,mark));
-                //if(item.instanceof book)
-                //write out("book",id, etc);
-                //else
-                //write out ("film", id, atist);
-                //in file - book,id,etc...
-                //  film,id,artist...
-//                System.out.println("Name: " + name
-//                        + "\nAge: " + age
-//                        + "\nMark: " + mark);
             }
         } catch (IOException e)
         {
@@ -477,32 +525,6 @@ public class main
         }
     }
 
-    /**
-     * takes in an arraylist of type item and returns an arraylist of all the
-     * book type in it
-     *
-     * @param list
-     * @return
-     */
-//    public static ArrayList<Book> filterForBooks(ArrayList<Items> list)
-//    {
-//        System.out.println("filter for books");
-//        ArrayList<Book> books = new ArrayList<>();
-//        System.out.println("crate array");
-//        for (Items item : list)
-//        {
-////            System.out.println(item);
-////            System.out.println("type: " + item.getType());
-//            //code to check for type pf books
-//            if (item.getType().toLowerCase().equals("book"))
-//            {
-//                System.out.println(item);
-////                Book newBook = (Book) item;
-////                books.add(newBook);
-//            }
-//        }
-//        return books;
-//    }
     public static void filterForBooks(ArrayList<Items> list)
     {
         System.out.println("filter for books");
@@ -538,6 +560,165 @@ public class main
             {
                 System.out.println(item);
             }
+        }
+    }
+
+    /**
+     * takes in an arraylist of type item and returns an arraylist of all the
+     * book type in it
+     *
+     * @param list
+     * @return
+     */
+    public static ArrayList<Book> filterBooks(ArrayList<Items> list)
+    {
+        System.out.println("filter for books");
+        ArrayList<Book> books = new ArrayList<>();
+//        System.out.println("crate array");
+        for (Items item : list)
+        {
+//            System.out.println(item);
+//            System.out.println("type: " + item.getType());
+            //code to check for type pf books
+            if (item instanceof Book)
+            {
+//                System.out.println(item);
+                //makesa  clone and adds it to the srraylist
+                Book newBook = new Book((Book) item);
+                books.add(newBook);
+            }
+        }
+        return books;
+    }
+
+    public void printBooks(ArrayList<Book> books)
+    {
+        for (Book book : books)
+        {
+//            System.out.println("\nTitle: " +  book.getTitle() + 
+//                                "\nAuthor: " + book.getAuthor() + 
+//                                "\nDescription: " + book.getDescription() + 
+//                                "\nGenere: " + book.getGenre() + 
+//                                "\nPageCount: " + book.getPageCount() + 
+//                                "\nEdtion: " + book.getEdition() + 
+//                                "\nISBN: " + book.getIsbn() + 
+//                                "\nPrice: " + book.getPrice());
+//            System.out.println("------------------- other edit");
+
+            System.out.printf("\n\nTitle: \t\t%-15s \nAuthor: \t%-15s \nDescription: \t%s \nGenere: \t%-15s \nPageCount \t%d \nEdtion: \t%.2f \nIsbn: \t\t%-10s \nPrice: \t\t€%.2f",
+                    book.getTitle(), book.getAuthor(), book.getDescription(), book.getGenre(), book.getPageCount(), book.getEdition(), book.getIsbn(), book.getPrice());
+        }
+    }
+
+    public static ArrayList<Film> filterFilms(ArrayList<Items> list)
+    {
+        System.out.println("filter for books");
+        ArrayList<Film> films = new ArrayList<>();
+//        System.out.println("crate array");
+        for (Items item : list)
+        {
+//            System.out.println(item);
+//            System.out.println("type: " + item.getType());
+            //code to check for type pf books
+            if (item instanceof Film)
+            {
+//                System.out.println(item);
+                Film newBook = new Film((Film) item);
+                films.add(newBook);
+            }
+        }
+        return films;
+    }
+
+    public void printFilms(ArrayList<Film> films)
+    {
+        for (Film film : films)
+        {
+//            System.out.println(film);
+
+            System.out.printf("\n\nTitle: \t\t%-15s \nDirector: \t%-15s \nDescription: \t%s \nGenere: \t%-15s \nRating \t\t%d \nLength: \t%d(mins) \nStudio: \t%-10s \nPrice: \t\t€%.2f",
+                    film.getTitle(), film.getDirector(), film.getDescription(), film.getGenre(), film.getRating(), film.getLength(), film.getStudio(), film.getPrice());
+
+        }
+    }
+
+    public void sortItemsAll(int choice)
+    {
+        if (choice == 1)
+        {
+            System.out.println("\n sort by item title");
+            ItemTitleComparator titleComparator = new ItemTitleComparator();
+            Collections.sort(this.library.getItems(), titleComparator);
+            Items.DisplayItems(this.library.getItems());
+
+        } else if (choice == 2)
+        {
+            System.out.println("\n sorting by  item price\n");
+            ItemPriceComparator mileageComparator = new ItemPriceComparator();
+            Collections.sort(this.library.getItems(), mileageComparator);
+            Items.DisplayItems(this.library.getItems());
+        }
+    }
+
+    public void sortItemsBooks(int choice)
+    {
+        ArrayList<Book> books = filterBooks(this.library.getItems());
+
+        if (choice == 1)
+        {
+            System.out.println("\n sort by author\n");
+            BookAuthorComparator authorComparator = new BookAuthorComparator();
+            Collections.sort(books, authorComparator);
+            printBooks(books);
+        } else if (choice == 2)
+        {
+            System.out.println("\n sort by page count");
+            BookPageComparator pageComparator = new BookPageComparator();
+            Collections.sort(books, pageComparator);
+            printBooks(books);
+        } else if (choice == 3)
+        {
+            System.out.println("\n sort by item title");
+            ItemTitleComparator titleComparator = new ItemTitleComparator();
+            Collections.sort(books, titleComparator);
+            printBooks(books);
+        } else if (choice == 4)
+        {
+            System.out.println("\n sorting by  item price\n");
+            ItemPriceComparator mileageComparator = new ItemPriceComparator();
+            Collections.sort(books, mileageComparator);
+            printBooks(books);
+        }
+    }
+
+    public void sortItemsFilms(int choice)
+    {
+        ArrayList<Film> films = filterFilms(this.library.getItems());
+
+        if (choice == 1)
+        {
+            System.out.println("\n sort by film rating");
+            FilmRatingComparator ratingComparator = new FilmRatingComparator();
+            Collections.sort(films, ratingComparator);
+            printFilms(films);
+        } else if (choice == 2)
+        {
+            System.out.println("\n sort by film length");
+            FilmLengthComparator lengthComparator = new FilmLengthComparator();
+            Collections.sort(films, lengthComparator);
+            printFilms(films);
+        } else if (choice == 3)
+        {
+            System.out.println("\n sort by item title");
+            ItemTitleComparator titleComparator = new ItemTitleComparator();
+            Collections.sort(films, titleComparator);
+            printFilms(films);
+        } else if (choice == 4)
+        {
+            System.out.println("\n sorting by  item price\n");
+            ItemPriceComparator mileageComparator = new ItemPriceComparator();
+            Collections.sort(films, mileageComparator);
+            printFilms(films);
         }
     }
 

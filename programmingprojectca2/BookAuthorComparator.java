@@ -13,9 +13,11 @@ import java.util.Comparator;
  */
 public class BookAuthorComparator implements Comparator<Book>
 {
+    @Override
     public int compare(Book a, Book b)
     {
-        return a.getAuthor().toLowerCase().compareTo(b.getAuthor().toLowerCase());
+        return a.getAuthor().compareToIgnoreCase(b.getAuthor());
+        
 
     }
     
