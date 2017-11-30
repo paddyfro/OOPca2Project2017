@@ -262,7 +262,7 @@ public class LibraryApp
     {
         Film newFilm = new Film(film);
         itemList.remove(index);
-        itemList.add(index, film);
+        itemList.add(index, newFilm);
         System.out.println("Film details have been updated!");
     }
 

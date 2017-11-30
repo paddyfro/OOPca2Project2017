@@ -6,8 +6,10 @@
 package CA2Project;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.StringTokenizer;
@@ -23,7 +25,7 @@ public class main
 
     private final String[] mainMenuStringArray =
     {
-        "Display", "Admin", "Search", "Sort", "Exit"
+        "Display", "Admin", "Search", "Sort", "Save Data", "Exit"
     };
 
     private final String[] DisplayMenuStringArray =
@@ -48,31 +50,36 @@ public class main
 
     private final String[] SortMenuStringArrayAll =
     {
-        "Sort by Title", "Sort by Price", "Go to Main Menu"
+        "Sort by Title", "Sort by Price", "Sort by Genere", "Sort by Release Year", "Go to Sort Menu"
     };
 
     private final String[] SortMenuStringArrayBooks =
     {
-        "Sort by Author", "Sort by Page count", "Sort by title", "sort by price", "Go to Main Menu"
+        "Sort by Author", "Sort by Page count", "Sort by title", "sort by price", "Go to Sort Menu"
     };
 
     private final String[] SortMenuStringArrayFilms =
     {
-        "Sort by Rating", "Sort by film length", "Sort by title", "sort by price", "Go to Main Menu"
+        "Sort by Rating", "Sort by film length", "Sort by title", "sort by price", "Go to Sort Menu"
     };
 
     private final String[] SelectItemTypeStringArray =
     {
         "Book", "Film"
     };
+    
+    private final String[] SaveDataMenu = 
+    {
+      "yes", "no"  
+    };
 
-    public static void main(String[] args)
+    public static void main(String[] args)throws FileNotFoundException
     {
         main theApp = new main();
         theApp.start();
     }
 
-    private void start()
+    private void start()throws FileNotFoundException
     {
         initialiseStores();
         showMainMenu();
@@ -86,7 +93,7 @@ public class main
 
     }
 
-    private void showMainMenu()
+    private void showMainMenu()throws FileNotFoundException
     {
         int choice;
         do
@@ -111,12 +118,26 @@ public class main
                 case 4:
                     //patrick
                     showSortMenu("Sort Menu", SortMenuStringArray);
-
+                    break;
+                case 5:
+                   writeData();
+                   break;
                 default:
                     break;
             }
         } while (choice != mainMenuStringArray.length); //user enters choice in range 1 - 4 i.e. not zero based
-
+        
+        System.out.println("Would you like to save your work? ");
+        choice = showMenuGetChoice(SaveDataMenu);
+        if(choice == 1)
+        {
+            writeData();
+        }
+        else{
+            System.out.println("Thanks for using our library system.");
+            micDrop();
+        }
+        
         System.out.println("\nGoodbye...");
     }
 
@@ -136,14 +157,17 @@ public class main
             {
                 //"Display Books"
 //                displayBooksArray(this.library.getItems());
-                filterForBooks(this.library.getItems());
+//                filterForBooks(this.library.getItems());
+                printBooks(filterBooks(this.library.getItems()));
             } else if (choice == 3)
             {
                 //"Display Films",
-                filterForFilms(this.library.getItems());
+//                filterForFilms(this.library.getItems());
+                printFilms(filterFilms(this.library.getItems()));
             } else if (choice == 4)
             {
                 //"Display Library Info"
+                System.out.println("Library Info");
             }
         } while (choice != displayMenuStringArray.length);
     }
@@ -223,12 +247,9 @@ public class main
         {
             System.out.println("\n\n***************** " + menuHeader + " *****************");
             choice = showMenuGetChoice(sortMenuStringArray);
-            if (choice == 1)
+            if (choice >= 1 || choice < sortMenuStringArray.length)
             {
-                sortItemsAll(1);
-            } else if (choice == 2)
-            {
-                sortItemsAll(2);
+                sortItemsAll(choice);
             }
         } while (choice != sortMenuStringArray.length); //user enters choice in range 1 - 5 i.e. not zero based	
     }
@@ -240,7 +261,7 @@ public class main
         {
             System.out.println("\n\n***************** " + menuHeader + " *****************");
             choice = showMenuGetChoice(sortMenuStringArray);
-            if (choice >= 1 || choice <= sortMenuStringArray.length)
+            if (choice >= 1 || choice < sortMenuStringArray.length)
             {
 //                System.out.println("sorting by author");
                 sortItemsBooks(choice);
@@ -255,7 +276,7 @@ public class main
         {
             System.out.println("\n\n***************** " + menuHeader + " *****************");
             choice = showMenuGetChoice(sortMenuStringArray);
-            if (choice >= 1 || choice <= sortMenuStringArray.length)
+            if (choice >= 1 || choice < sortMenuStringArray.length)
             {
 //                System.out.println(" sort by rating");
                 sortItemsFilms(choice);
@@ -457,65 +478,7 @@ public class main
         }
     }
 
-    public void readDataIn()
-    {
 
-        try (BufferedReader br = new BufferedReader(new FileReader("library.csv")))
-        {
-
-            String line;   // line of text from file
-
-            while ((line = br.readLine()) != null)
-            {
-
-//                System.out.println("*** line = " + line + " ***");
-                // create tokenizer and set the delimeter character
-                StringTokenizer stringTokenizer = new StringTokenizer(line, ",");
-                String type = stringTokenizer.nextElement().toString();
-                String title = stringTokenizer.nextElement().toString();
-                String genere = stringTokenizer.nextElement().toString();
-                String description = stringTokenizer.nextElement().toString();
-                Double price = Double.parseDouble(stringTokenizer.nextElement().toString());
-                Integer releaseYear = Integer.parseInt(stringTokenizer.nextElement().toString());
-                //check to see if its type atches book
-                if (type.toLowerCase().equals("book"))
-                {
-                    //gets relevant book info
-                    String isbn = stringTokenizer.nextElement().toString();
-                    String author = stringTokenizer.nextElement().toString();
-                    Integer pageCount = Integer.parseInt(stringTokenizer.nextElement().toString());
-                    Double edidtion = Double.parseDouble(stringTokenizer.nextElement().toString());
-                    //adds book item to library arraylist
-                    this.library.add(new Book(type, title, genere, description, price, releaseYear, isbn, author, pageCount, edidtion));
-
-                } else
-                {
-                    //gets relevant film info
-                    String director = stringTokenizer.nextElement().toString();
-                    Integer rating = Integer.parseInt(stringTokenizer.nextElement().toString());
-                    Integer length = Integer.parseInt(stringTokenizer.nextElement().toString());
-                    String studio = stringTokenizer.nextElement().toString();
-                    //adds film item to library arrayList
-                    this.library.add(new Film(type, title, genere, description, price, releaseYear, director, rating, length, studio));
-
-                }
-            }
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    //display all elements of an array of type book
-//    public static void displayBooksArray(ArrayList<Items> list)
-//    {
-////        System.out.println("displayBookArray");
-//        ArrayList<Book> book = filterForBooks(list);
-//        for (Book books : book)
-//        {
-//            System.out.println(books);
-//        }
-//    }
     //display all elements fo an array of type film
     public static void displayFilmsArray(ArrayList<Film> list)
     {
@@ -605,7 +568,7 @@ public class main
 //                                "\nPrice: " + book.getPrice());
 //            System.out.println("------------------- other edit");
 
-            System.out.printf("\n\nTitle: \t\t%-15s \nAuthor: \t%-15s \nDescription: \t%s \nGenere: \t%-15s \nPageCount \t%d \nEdtion: \t%.2f \nIsbn: \t\t%-10s \nPrice: \t\t€%.2f",
+            System.out.printf("\n\n\033[0;1mTitle: \t\t%-15s \nAuthor: \t%-15s \n\033[0;1mDescription: \t%s \nGenere: \t%-15s \n\033[0;1mPageCount \t%d \nEdtion: \t%.2f \n\033[0;1mIsbn: \t\t%-10s \nPrice: \t\t€%.2f",
                     book.getTitle(), book.getAuthor(), book.getDescription(), book.getGenre(), book.getPageCount(), book.getEdition(), book.getIsbn(), book.getPrice());
         }
     }
@@ -636,9 +599,31 @@ public class main
         {
 //            System.out.println(film);
 
-            System.out.printf("\n\nTitle: \t\t%-15s \nDirector: \t%-15s \nDescription: \t%s \nGenere: \t%-15s \nRating \t\t%d \nLength: \t%d(mins) \nStudio: \t%-10s \nPrice: \t\t€%.2f",
+            System.out.printf("\n\n\033[0;1mTitle: \t\t%-15s \nDirector: \t%-15s \n\033[0;1mDescription: \t%s \nGenere: \t%-15s \n\033[0;1mRating \t\t%d \nLength: \t%d(mins) \n\033[0;1mStudio: \t%-10s \nPrice: \t\t€%.2f",
                     film.getTitle(), film.getDirector(), film.getDescription(), film.getGenre(), film.getRating(), film.getLength(), film.getStudio(), film.getPrice());
 
+        }
+    }
+
+    public void printAllTheThings()
+    {
+        for (int i = 0; i < this.library.getItems().size(); i++)
+        {
+            System.out.println("\nIndex [" + i + "]");
+            System.out.printf("\033[0;1mTitle: \t\t%-15s  \nDescription: \t%s \n\033[0;1mGenere: \t%-15s \nRelease Year: \t%d",
+                    this.library.getItems().get(i).getTitle(), this.library.getItems().get(i).getDescription(), this.library.getItems().get(i).getGenre(), this.library.getItems().get(i).getReleaseYear());
+            if (this.library.getItems().get(i) instanceof Book)
+            {
+                Book book = new Book((Book) this.library.getItems().get(i));
+                System.out.printf("\n\033[0;1mAuthor: \t%-15s\nPageCount \t%d \n\033[0;1mEdtion: \t%.2f \nIsbn: \t\t%-10s \n\033[0;1mPrice: \t\t€%.2f\n",
+                        book.getAuthor(), book.getPageCount(), book.getEdition(), book.getIsbn(), book.getPrice());
+            }
+            if (this.library.getItems().get(i) instanceof Film)
+            {
+                Film film = new Film((Film) this.library.getItems().get(i));
+                System.out.printf("\n\033[0;1mDirector: \t%-15s \nRating \t\t%d \n\033[0;1mLength: \t%d(mins) \nStudio: \t%-10s \n\033[0;1mPrice: \t\t€%.2f\n",
+                        film.getDirector(), film.getRating(), film.getLength(), film.getStudio(), film.getPrice());
+            }
         }
     }
 
@@ -646,17 +631,31 @@ public class main
     {
         if (choice == 1)
         {
-            System.out.println("\n sort by item title");
+            System.out.println("\nSort by Title");
             ItemTitleComparator titleComparator = new ItemTitleComparator();
             Collections.sort(this.library.getItems(), titleComparator);
-            Items.DisplayItems(this.library.getItems());
+//            Items.DisplayItems(this.library.getItems());
+            printAllTheThings();
 
         } else if (choice == 2)
         {
-            System.out.println("\n sorting by  item price\n");
-            ItemPriceComparator mileageComparator = new ItemPriceComparator();
-            Collections.sort(this.library.getItems(), mileageComparator);
-            Items.DisplayItems(this.library.getItems());
+            System.out.println("\nSorting by Price");
+            ItemPriceComparator priceComparator = new ItemPriceComparator();
+            Collections.sort(this.library.getItems(), priceComparator);
+//            Items.DisplayItems(this.library.getItems());
+            printAllTheThings();
+        } else if (choice == 3)
+        {
+            System.out.println("\nSort by Genere");
+            ItemGenereComparator genereComparator = new ItemGenereComparator();
+            Collections.sort(this.library.getItems(), genereComparator);
+            printAllTheThings();
+        } else if (choice == 4)
+        {
+            System.out.println("\nSort by Release year");
+            ItemReleaseYearComparator releaseYearComparator = new ItemReleaseYearComparator();
+            Collections.sort(this.library.getItems(), releaseYearComparator);
+            printAllTheThings();
         }
     }
 
@@ -666,27 +665,27 @@ public class main
 
         if (choice == 1)
         {
-            System.out.println("\n sort by author\n");
+            System.out.println("\nSort by Author");
             BookAuthorComparator authorComparator = new BookAuthorComparator();
             Collections.sort(books, authorComparator);
             printBooks(books);
         } else if (choice == 2)
         {
-            System.out.println("\n sort by page count");
+            System.out.println("\nSort by Page count");
             BookPageComparator pageComparator = new BookPageComparator();
             Collections.sort(books, pageComparator);
             printBooks(books);
         } else if (choice == 3)
         {
-            System.out.println("\n sort by item title");
+            System.out.println("\nSort by Title");
             ItemTitleComparator titleComparator = new ItemTitleComparator();
             Collections.sort(books, titleComparator);
             printBooks(books);
         } else if (choice == 4)
         {
-            System.out.println("\n sorting by  item price\n");
-            ItemPriceComparator mileageComparator = new ItemPriceComparator();
-            Collections.sort(books, mileageComparator);
+            System.out.println("\nSorting by Price");
+            ItemPriceComparator priceComparator = new ItemPriceComparator();
+            Collections.sort(books, priceComparator);
             printBooks(books);
         }
     }
@@ -697,29 +696,192 @@ public class main
 
         if (choice == 1)
         {
-            System.out.println("\n sort by film rating");
+            System.out.println("\nSort by Rating");
             FilmRatingComparator ratingComparator = new FilmRatingComparator();
             Collections.sort(films, ratingComparator);
             printFilms(films);
         } else if (choice == 2)
         {
-            System.out.println("\n sort by film length");
+            System.out.println("\nSort by Length");
             FilmLengthComparator lengthComparator = new FilmLengthComparator();
             Collections.sort(films, lengthComparator);
             printFilms(films);
         } else if (choice == 3)
         {
-            System.out.println("\n sort by item title");
+
+            System.out.println("\nSort by Title");
             ItemTitleComparator titleComparator = new ItemTitleComparator();
             Collections.sort(films, titleComparator);
             printFilms(films);
         } else if (choice == 4)
         {
-            System.out.println("\n sorting by  item price\n");
-            ItemPriceComparator mileageComparator = new ItemPriceComparator();
-            Collections.sort(films, mileageComparator);
+            System.out.println("\nSorting by Price");
+            ItemPriceComparator priceComparator = new ItemPriceComparator();
+            Collections.sort(films, priceComparator);
             printFilms(films);
         }
+    }
+    
+    
+    public void readDataIn()
+    {
+
+        try (BufferedReader br = new BufferedReader(new FileReader("library.csv")))
+        {
+
+            String line;   // line of text from file
+
+            while ((line = br.readLine()) != null)
+            {
+
+//                System.out.println("*** line = " + line + " ***");
+                // create tokenizer and set the delimeter character
+                StringTokenizer stringTokenizer = new StringTokenizer(line, ",");
+                String type = stringTokenizer.nextElement().toString();
+                String title = stringTokenizer.nextElement().toString();
+                String genere = stringTokenizer.nextElement().toString();
+                String description = stringTokenizer.nextElement().toString();
+                Double price = Double.parseDouble(stringTokenizer.nextElement().toString());
+                Integer releaseYear = Integer.parseInt(stringTokenizer.nextElement().toString());
+                //check to see if its type atches book
+                if (type.equalsIgnoreCase("book"))
+                {
+                    //gets relevant book info
+                    String isbn = stringTokenizer.nextElement().toString();
+                    String author = stringTokenizer.nextElement().toString();
+                    Integer pageCount = Integer.parseInt(stringTokenizer.nextElement().toString());
+                    Double edidtion = Double.parseDouble(stringTokenizer.nextElement().toString());
+                    //adds book item to library arraylist
+                    this.library.add(new Book(type, title, genere, description, price, releaseYear, isbn, author, pageCount, edidtion));
+
+                } else
+                {
+                    //gets relevant film info
+                    String director = stringTokenizer.nextElement().toString();
+                    Integer rating = Integer.parseInt(stringTokenizer.nextElement().toString());
+                    Integer length = Integer.parseInt(stringTokenizer.nextElement().toString());
+                    String studio = stringTokenizer.nextElement().toString();
+                    //adds film item to library arrayList
+                    this.library.add(new Film(type, title, genere, description, price, releaseYear, director, rating, length, studio));
+
+                }
+            }
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void writeData() throws FileNotFoundException
+    {
+        System.out.println("\n---------------------------------------\n\tWriting data to file....\n---------------------------------------\n");
+        try (PrintWriter out = new PrintWriter("library.csv"))
+        {
+            System.out.print("\t");
+            for(Items item : this.library.getItems())
+            {
+                
+                out.printf("%s,%s,%s,%s,%.2f,%d,",item.getType(), item.getTitle(),item.getGenre(), item.getDescription(), item.getPrice(), item.getReleaseYear());
+                if(item instanceof Book)
+                {
+                    Book book = new Book((Book) item);
+                    out.printf("%s,%s,%d,%.1f\n", book.getIsbn(), book.getAuthor(), book.getPageCount(), book.getEdition());
+                    System.out.print(".");
+                }
+                else
+                {
+                    Film film = new Film((Film) item);
+                    out.printf("%s,%d,%d,%s\n", film.getDirector(), film.getRating(),film.getLength(), film.getStudio());
+                    System.out.print(".");
+                }
+//                out.printf("%s\n", this.library.getItems().get(i).getTitle());
+            }
+            
+            System.out.println("\n\n---------------------------------------\n\t...Writing data complete!\n---------------------------------------\n");
+            
+        }catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        
+    }
+    
+    
+    public void micDrop()
+    {
+        System.out.println("                                                                                                                                                      \n" +
+"                                                                                                                                                      \n" +
+"                                                                                                                                                      \n" +
+"                                                                                                                                                      \n" +
+"                                                                         `.`                                                                          \n" +
+"                                                                .,`     .i;i.                                                                         \n" +
+"                                                               ,i;i.    ;:,:;                                                                         \n" +
+"                                                              `i:,::   `;,.,;                                                                         \n" +
+"                                                              `;..,:   ,:..,:   `..                                                                   \n" +
+"                                                              .:..,:   :,..:,  `i;i;                                                                  \n" +
+"                                                              .:..,:  `;...;.  ::,,i.                                                                 \n" +
+"                                                              ,:..,:  .:..,;` `;,.,;.                                                                 \n" +
+"                                                              ,,..,,  :,..,;  ,:..,;                                                                  \n" +
+"                                                       ,:.    :,..:,  ;,..,:  ;,..,:                                                                  \n" +
+"                                                      :;;i.   :,..:, .:...:, .;...:,                                                                  \n" +
+"                                                      ;:,::   ;,..:. ,,...;` :,..,;`                                                                  \n" +
+"                                                      ::.,;`  ;...:. :,..,; `;...,:                                                                   \n" +
+"                                                      .:..:,  ;...;``;,..,: ,:...:,                                                                   \n" +
+"                                                      `;..,: `;...;``;...:, ;,...;`                                                                   \n" +
+"                                                       :,.,;`.:...; ,:...;..:...,;                                                                    \n" +
+"                                                       ,:..:,.:..,; :,..,; :,...:,                                                                    \n" +
+"                                                       .;..,;,,...; ;...,:`;....;`                                                                    \n" +
+"                                                        ;,..::....::,....::,...,;                                                                     \n" +
+"                                                        :,...............,,....,:                                                                     \n" +
+"                                                        .:.....................:,                                                                     \n" +
+"                                                        `;.....................,,                                                                     \n" +
+"                                                         :,....................,:                                                                     \n" +
+"                                                         :,.......,......,......;.                                                                    \n" +
+"                                                         ,:........,....,,......,;,                                                                   \n" +
+"                                                         .:......,,....,,........,:;::;;::,`                                                          \n" +
+"                                                         `;......,.....,,..........,,,,,,:;i.                                                         \n" +
+"                                                          ;,....,......,...................:;                                                         \n" +
+"                                                          ;,...........,...................,i`                                                        \n" +
+"                                                          .;,......................,.......,i`                                                        \n" +
+"                                                           ,;,.................,:;:;;:,,,,,;:                                                         \n" +
+"                                                            .;:,.............,:;,`  `.::;;;,                                                          \n" +
+"                                                             `,;;:::::,....,:;,`                                                                      \n" +
+"                                                                `,,,.,:;;;;:,`                                                                        \n" +
+"                                                                 ` ` `` ``                                                                            \n" +
+"                                                                 ` ` ``                                                                               \n" +
+"                                                                 ` ` ``                                                                               \n" +
+"                                                                 ` ` ``                                                                               \n" +
+"                                                                 ` . ``                                                                               \n" +
+"                                                                 . . ``                                                                               \n" +
+"                                                                 . . ``                                                                               \n" +
+"                                                                 . . ``                                                                               \n" +
+"                                                                 . .```                                                                               \n" +
+"                                                       `:;##nz#+**:;...                                                                               \n" +
+"                                                       #xnxnxxxxxxMMMMxnz+*i;:.`     `.:i***+:                                                        \n" +
+"                                                      ,xxnxnxxxxxxxxxxxxxxxMMMMMMxn#+zzzzz+MWWz`                                                      \n" +
+"                                                      :xxnxnxxxxxxxxxxxxxxxxxxxxxxx#zzzzz#*WWWWn`                                                     \n" +
+"                                                      :Mxnxnxxxxxxxxxxxxxxxxxxxxxxx+####z+#WWWWW*                                                     \n" +
+"                                                      `nMnMnMMxxxxxxxxxxxxxxxxxxxxn+#####*nWWWWWx                                                     \n" +
+"                                                        ,+xxMMMMMMMMMMxxxxxxxxxxxxz######iMWWWWWW`                                                    \n" +
+"                                                           :i*#zxMMMMMMMMMMMMMMMxxnzzzzz#iWWWWWWW`                                                    \n" +
+"                                                                  .,;i+znxMMMMMMMMnzzzzzz*WWWWWWx                                                     \n" +
+"                                                                          `,:i+#nxxznzzzz*WWWWWW*                                                     \n" +
+"                                                                                  .:#nnnn+WWWWWx`                                                     \n" +
+"                                                                                     ,*zn#MWWWn.                                                      \n" +
+"                                                                                        .:+z#:                                                        \n" +
+"                                                                                                                                                      \n" +
+"                                                                                                                                                      \n" +
+"                                                                                                                                                      \n" +
+"                                                                                                                                                      \n" +
+"                                                                                                                                                      \n" +
+"                                                                                                                                                      \n" +
+"                                                                                                                                                      \n" +
+"                                                                                                                                                      \n" +
+"                                                                    ``````````````````````````````                                                    \n" +
+"                                                            `````......,,,,,,,,,..........`````````                                                   \n" +
+"                                                           ````.....,,,,,,,,,,,,,,,.........```````                                                   \n" +
+"                                                                `````````....`.````````````````````                                                   \n" +
+"                                                                                 `````````````````     ");
     }
 
 }
